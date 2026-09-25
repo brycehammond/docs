@@ -48,8 +48,9 @@ so. It is the shape [`x.1sav.icon`](/specifications/extensions/x.1sav.icon/) alr
 qualifier it may turn out not to have, and it leaves an offset with no reading beside it unwritable rather than merely
 invalid.
 
-Four of the seven [card formats](/specifications/memory-cards/) date an entry. PS1 and Neo Geo carry no time, and Saturn
-keeps its date inside the save rather than in a directory.
+Four of the seven [card formats](/specifications/memory-cards/) date an entry, and PS1, N64 and Neo Geo carry no time.
+Saturn's date is in its entry like the others', even though that entry sits at the head of the save's first block rather
+than in a directory region.
 
 ## Where it goes
 
@@ -80,7 +81,7 @@ the same reason in reverse.
 
 ## The format keys
 
-Only a format whose entry holds something a writer cannot get elsewhere gets one, and three of the seven do not.
+Only a format whose entry holds something a writer cannot get elsewhere gets one, and two of the seven do not.
 
 | Format       | Key                                                                      | Why                                                                                                            |
 | ------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
@@ -89,7 +90,7 @@ Only a format whose entry holds something a writer cannot get elsewhere gets one
 | `vmu`        | not yet written                                                          | The mini-game type byte, copy protection, a header offset.                                                     |
 | `n64-cpak`   | not yet written                                                          | A company code and the note's own character encoding.                                                          |
 | `neogeo-mc`  | never                                                                    | Its 4 bytes are an NGH number and a sub-number, which are `path`, and a FAT index, which a writer regenerates. |
-| `saturn-bup` | never                                                                    | No directory entry to decompose.                                                                               |
+| `saturn-bup` | not yet written                                                          | The comment's language byte, which nothing else carries.                                                       |
 | `ps1-mc`     | never                                                                    | Its frame holds a filename, a state byte and a block link: `path`, and two things a writer regenerates.        |
 
 ## When to set it

@@ -318,14 +318,17 @@ export const valid = {
     ],
   ),
 
-  // Saturn keeps a save's directory entry inside the save's own first block, so
-  // `saturn-bup` is the one card format where a card entry carries no `dirent`
-  // at all. A writer rewrites the block chain in the payload instead.
+  // Saturn keeps a save's directory entry at the head of the save's own first
+  // block rather than in a directory region, which changes where a reader finds
+  // those 30 bytes and not whether they can be carried, so `dirent` holds them
+  // like any other format's. What follows them is the block chain, and a writer
+  // rewrites that in the payload instead.
   "saturn-backup": bundle(map({ 0: "card", 1: "saturn", 4: map({ 0: "saturn-bup", 1: 32768 }) }), [
     nested(oneFileSave("saturn", map({ 4: "Panzer Dragoon Saga" }), pattern(1024, 41)), {
       id: 0,
       path: "PANZER_SV",
       slot: 1,
+      dirent: pattern(30, 41),
     }),
   ]),
 

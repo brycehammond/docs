@@ -31,9 +31,10 @@ title: a PS2 title carries a break offset into a single string, and both halves 
 ## Where the text comes from
 
 On nearly every format it is in the save's payload rather than in the directory entry. GameCube keeps a comment address,
-PS1 keeps its 64-byte title in the save's first block, a VMU's descriptions are in the VMS header, Saturn has no entry
-at all, a PS2 save keeps its title in `icon.sys`, and a Neo Geo game writes one into the first 20 bytes of its own data.
-N64 is the exception: a controller pak's note table holds the note name.
+PS1 keeps its 64-byte title in the save's first block, a VMU's descriptions are in the VMS header, a PS2 save keeps its
+title in `icon.sys`, and a Neo Geo game writes one into the first 20 bytes of its own data. N64 and Saturn are the
+exceptions: a controller pak's note table holds the note name, and a Saturn entry holds a ten-byte comment beside its
+file name.
 
 ## Where it goes
 

@@ -18,15 +18,15 @@ original card byte for byte, and it is not meant to be. A producer that wants by
 
 `format` fixes two numbers, both in bytes: the length of a `dirent`, and the size of a block.
 
-| Format       | `dirent` | Block | Notes                                                                                                                                                                           |
-| ------------ | -------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ps1-mc`     | 128      | 8192  | The 128 is one directory frame, and a block is 64 of them.                                                                                                                      |
-| `ps2-mc`     | 512      | 1024  | One entry for the save's directory, one per file inside it. A block is a cluster of two 512-byte pages.                                                                         |
-| `n64-cpak`   | 32       | 256   | The pak's own word for a block is a page.                                                                                                                                       |
-| `gc-mc`      | 64       | 8192  |                                                                                                                                                                                 |
-| `vmu`        | 32       | 512   |                                                                                                                                                                                 |
-| `neogeo-mc`  | 4        | 64    | Cards run from 2 KiB to 16 KiB and every one of them uses the same block.                                                                                                       |
-| `saturn-bup` | none     | 64    | The entry lives in the first block of the save itself, so the key is absent. The 64 is the console's internal memory; a backup cartridge is a separate device carrying its own. |
+| Format       | `dirent` | Block | Notes                                                                                                                                                                                                                                              |
+| ------------ | -------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ps1-mc`     | 128      | 8192  | The 128 is one directory frame, and a block is 64 of them.                                                                                                                                                                                         |
+| `ps2-mc`     | 512      | 1024  | One entry for the save's directory, one per file inside it. A block is a cluster of two 512-byte pages.                                                                                                                                            |
+| `n64-cpak`   | 32       | 256   | The pak's own word for a block is a page.                                                                                                                                                                                                          |
+| `gc-mc`      | 64       | 8192  |                                                                                                                                                                                                                                                    |
+| `vmu`        | 32       | 512   |                                                                                                                                                                                                                                                    |
+| `neogeo-mc`  | 4        | 64    | Cards run from 2 KiB to 16 KiB and every one of them uses the same block.                                                                                                                                                                          |
+| `saturn-bup` | 30       | 64    | The entry sits at the head of the save's own first block rather than in a directory region, and the block list that follows it is the writer's. The 64 is the console's internal memory; a backup cartridge is a separate device carrying its own. |
 
 The names are the ones already in circulation for these layouts, not system slugs with a suffix, which is why `ps1-mc`
 says `ps1` where the [registry](/registries/systems/) says `psx`, and why `vmu` carries no system at all. Reading a
@@ -96,7 +96,9 @@ what `.mcs`, `.psu`, `.note` and `.gci` each demonstrate in production, since no
 Three cases need more:
 
 - **Saturn** stores its own block chain inside the save's first block, so a writer rewrites those numbers rather than
-  treating the payload as opaque. It is the only format here where that is true.
+  treating the payload as opaque. It is the only format here where that is true. The `dirent` ahead of that chain is not
+  affected: every field in it — name, language, comment, date, length — is the same wherever the save sits, so it is
+  carried verbatim like any other format's and only the chain is rebuilt.
 - **GameCube** saves for Phantasy Star Online and F-Zero GX embed the destination card's flash serial and a CRC32 over
   it, and the game rejects a save whose serial does not match. A writer re-signs them, as Dolphin does on every copy.
 - **Dreamcast** mini-games must start at block 0 and stay contiguous, because they execute in place from flash. The
