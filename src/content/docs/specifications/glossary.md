@@ -85,8 +85,9 @@ Most normative rules name one of these three, and which one is the whole meaning
 
 ## Names
 
-- **Extension key.** A [reverse-DNS](/specifications/common-types/reverse-dns-name/) text key on a header or a part,
-  carrying what the core format does not define. See [Extensions](/specifications/universal-saves-format/#extensions).
+- **Extension key.** A [reverse-DNS](/specifications/common-types/reverse-dns-name/) text key on a header, a part or a
+  `game` map, carrying what the core format does not define. See
+  [Extensions](/specifications/universal-saves-format/#extensions).
 - **The `x` tree.** [Names](/specifications/common-types/reverse-dns-name/#the-x-tree) for values that belong to no
   single producer, which these specifications define.
 - **Reserved name.** A [Vendor Names](/registries/vendors/) entry that belongs to nobody, which is what lets these

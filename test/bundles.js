@@ -502,6 +502,16 @@ export const valid = {
       }),
     ],
   ),
+
+  // `game` takes extension keys too, for a clue none of its integer keys names.
+  // A cartridge reader that read only the ROM header has a serial and a title
+  // and no hash, and the header's revision byte beside them is what tells two
+  // releases sharing that serial apart. A consumer that does not recognise the
+  // key skips it when matching and hands it back unchanged.
+  "game-extension-keys": bundle(
+    map({ 0: "save", 1: "gba", 2: map({ 3: "AGB-AXVE-USA", 4: "Pokemon Ruby", "x.example.revision": 1 }) }),
+    [part()],
+  ),
 };
 
 export const invalid = {
@@ -616,9 +626,13 @@ export const invalid = {
 
   // An extension key is a reverse-DNS name or it is nothing. Without that there
   // is no way to tell whose key this is, which is the one thing the namespace
-  // buys. A bare word and an uppercase name are both unmintable.
+  // buys. A bare word and an uppercase name are both unmintable, in `game` as
+  // much as on the header or a part.
   "extension-key-not-reverse-dns": bundle(map({ 0: "save", parsed: 1 }), [part()]),
   "extension-key-uppercase": bundle(map({ 0: "save" }), [part({ extra: new Map([["IO.mgba.rtc", 1]]) })]),
+  "game-extension-key-not-reverse-dns": bundle(map({ 0: "save", 2: map({ 4: "Pokemon Ruby", revision: 1 }) }), [
+    part(),
+  ]),
 
   // Tag 1 admits a float and this format does not. Left open, one instant would
   // have two conforming encodings and the content hash would stop being a

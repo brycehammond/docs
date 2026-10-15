@@ -61,8 +61,10 @@ describe("extension schemas", { skip }, () => {
   describe("as used by the bundle fixtures", () => {
     const everyMap = function* (b) {
       yield b.value[0];
+      if (b.value[0].has(2)) yield b.value[0].get(2);
       for (const { part: p, bundle: inner } of everyPart(b)) {
         yield p;
+        if (p.has(11)) yield p.get(11);
         if (inner) yield* everyMap(inner);
       }
     };
@@ -113,11 +115,18 @@ describe("extension schemas", { skip }, () => {
       assert.equal(run.status, 0, `expected valid, got: ${run.stdout}${run.stderr}`);
     });
 
+    const extras = new Map(Object.entries(extensions).map(([k, { valid }]) => [k, Object.values(valid)[0]]));
+
     it("accepts a part carrying them too, since both maps take the same keys", () => {
-      const extras = new Map(Object.entries(extensions).map(([k, { valid }]) => [k, Object.values(valid)[0]]));
       const run = h.validate(
         h.writeItem("part-extensions", bundle(map({ 0: "save", 1: "gba" }), [part({ extra: extras })])),
       );
+      assert.equal(run.status, 0, `expected valid, got: ${run.stdout}${run.stderr}`);
+    });
+
+    it("accepts a game map carrying them too, flat beside its own keys", () => {
+      const game = new Map([[4, "Pokemon Ruby"], ...extras]);
+      const run = h.validate(h.writeItem("game-extensions", bundle(map({ 0: "save", 1: "gba", 2: game }), [part()])));
       assert.equal(run.status, 0, `expected valid, got: ${run.stdout}${run.stderr}`);
     });
   });

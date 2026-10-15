@@ -176,8 +176,9 @@ map entries whose key is a text string in [reverse-DNS form](/specifications/com
 (`x.1sav.rtc`, `com.1retro.forge`). This is how a clock reading, parser-extracted gameplay tags, emulator-native
 structures and third-party annotations ride along, without the spec needing to know anything about them.
 
-The [header](/specifications/bundle/#0-header-map) and a [`Part`](/specifications/bundle/#part-map) both take them,
-flat, alongside their integer keys. The rules:
+The [header](/specifications/bundle/#0-header-map), a [`Part`](/specifications/bundle/#part-map) and the
+[`game`](/specifications/bundle/#game-hints-map) map either one carries all take them, flat, alongside their integer
+keys. The rules:
 
 - An extension key **MUST** be a well-formed reverse-DNS name, and there is no unnamespaced alternative. A producer with
   no domain to reverse takes a name in the [`x` tree](/specifications/common-types/reverse-dns-name/#the-x-tree). The

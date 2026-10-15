@@ -107,6 +107,13 @@ and not a catalog's key. To list a new resolver here, open a PR against this spe
 their tags, their ordering and their comparison rules all live. A producer emits every hash it has already computed and
 computes none it doesn't need: a consumer matching against a catalog only needs one hash the catalog also carries.
 
+`game` also takes [extension keys](/specifications/universal-saves-format/#extensions), flat beside its integer keys as
+on the header and a part. That is where a clue goes that none of the six names, such as the revision byte a ROM header
+carries beside its serial, which tells apart two releases that share one. A consumer matching against a catalog skips an
+extension key it does not recognise, as it skips an unknown resolver in `game_id`, and round-trips it unchanged. A key
+here describes the game and says nothing about this save, so that two saves of one game still carry the same `game`; a
+clock reading or what a parser found in the payload stays on the header or the part.
+
 #### `source` (map)
 
 Who produced the bytes. The same map attaches in two places. In the header (key 3) it names the producer that assembled

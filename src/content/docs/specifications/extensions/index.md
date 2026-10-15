@@ -7,9 +7,9 @@ sidebar:
 ---
 
 [Extension keys](/specifications/universal-saves-format/#extensions) let parsers, emulators, and third parties attach
-data to a bundle's header, or to a single part, under a [reverse-DNS](/specifications/common-types/reverse-dns-name/)
-text key, without the core spec having to know about them. The spec defines the _mechanism_ and the round-tripping
-rules; this catalogue lists the _keys_ people have defined.
+data to a bundle's header, to a single part, or to the `game` map either one carries, under a
+[reverse-DNS](/specifications/common-types/reverse-dns-name/) text key, without the core spec having to know about them.
+The spec defines the _mechanism_ and the round-tripping rules; this catalogue lists the _keys_ people have defined.
 
 A key's schema belongs to its producer, and those entries are **non-normative**: the page records a shape these
 specifications observed, and the producer may change it without notice. A key under a

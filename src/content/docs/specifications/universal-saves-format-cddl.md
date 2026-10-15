@@ -13,8 +13,8 @@ validators consume that file directly, and this page renders it at build time.
 One thing the spec's prose leaves implicit is pinned here: the small named maps (`source`, `card`) use **integer keys in
 listing order**, consistent with the format's compact-uint convention.
 
-Every text a producer mints is checked. The two that are a bare `reverse-dns` are the extension keys on `header` and
-`part`, admitted by `* reverse-dns => any`, and the resolver names keying `game_id`. A key that is not a well-formed
+Every text a producer mints is checked. The two that are a bare `reverse-dns` are the extension keys on `header`, `part`
+and `game`, admitted by `* reverse-dns => any`, and the resolver names keying `game_id`. A key that is not a well-formed
 reverse-DNS name matches no rule and fails. What sits _under_ an extension key is `any` and is never checked, which is
 deliberate rather than a gap; so is a `game_id` value, which is whatever form its catalog publishes.
 

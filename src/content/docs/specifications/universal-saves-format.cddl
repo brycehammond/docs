@@ -88,6 +88,7 @@ game = {
   ? 3 => tstr,        ; serial
   ? 4 => tstr,        ; title
   ? 5 => system-slug, ; system
+  * reverse-dns => any,   ; extension keys, flat as in the header
 }
 
 ; reverse-DNS resolver name ("com.1retro", "org.hasheous", ...) => this game's
