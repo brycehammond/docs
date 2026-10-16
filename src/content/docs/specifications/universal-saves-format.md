@@ -4,11 +4,11 @@ description: A portable, self-describing CBOR container for retro console save f
 sidebar:
   label: Overview
   badge:
-    text: v0.3
+    text: v0.4
     variant: caution
 ---
 
-This is version 0.3 of this specification, and it is not yet stabilized. Expect breaking changes; until 1.0 they happen
+This is version 0.4 of this specification, and it is not yet stabilized. Expect breaking changes; until 1.0 they happen
 in place, under the same bundle tag.
 
 ## Changelog
@@ -18,6 +18,10 @@ moved. A version covers the format, the [common types](/specifications/common-ty
 [extension keys](/specifications/extensions/) these specifications own; a key belonging to a producer changes on that
 producer's schedule instead.
 
+- **0.4**, 2026-10-16. Breaking: a [`source`](/specifications/bundle/#source-map) names the core apart from the app that
+  ran it. A core's registry slug moves from `app` to the new `core` key, beside `core_version`, and `app` takes its slug
+  from the new [Apps registry](/registries/apps/) instead, so an `app` of `"mgba"` written under 0.3 meant the mGBA core
+  and now means an app.
 - **0.3**, 2026-09-18. Breaking: shapes are explicit. A bundle names one in required header key 0, and `created_at`
   moved to key 6. Breaking: an [`x.1sav.dirent`](/specifications/extensions/x.1sav.dirent/) time is a reading and an
   optional UTC offset rather than a bare instant, because no console here records the zone its clock was set to.
@@ -163,7 +167,7 @@ any operation that depends on knowing: walking the parts, restoring a save, rebu
 bundle is not the same as rejecting it, and only the second loses the bytes.
 
 The schema is the narrower of the two on purpose. It pins the four shapes this version defines, so validating against it
-says "this is a conforming 0.3 bundle" rather than "some decoder can read this", the same asymmetry
+says "this is a conforming 0.4 bundle" rather than "some decoder can read this", the same asymmetry
 [Additive integer keys](#additive-integer-keys) describes.
 
 A bundle names its shape and a decoder reads it; what the parts then mean is that shape's document, and

@@ -461,7 +461,9 @@ export const valid = {
   // part came from an emulator instead, so it carries its own source. Note the
   // split inside one map: `device_kind` is a spec slug nobody may mint into,
   // while `app` beside it is the producer's own name, here reverse-DNS for the
-  // reader and a Cores registry slug for the emulator.
+  // reader and an Apps registry slug for the emulator. The reader runs no core;
+  // the emulator names the one it ran in `core`, and the firmware it ran on in
+  // `platform`.
   "source-provenance": bundle(
     map({ 0: "save", 1: "gb", 3: map({ 0: "cartridge-reader", 1: "a1b2c3", 2: "io.epilogue", 3: "1.0.3" }) }),
     [
@@ -469,7 +471,9 @@ export const valid = {
       part({
         id: 1,
         payload: pattern(512, 17),
-        extra: new Map([[10, map({ 0: "emulator", 2: "mgba", 3: "0.10.2" })]]),
+        extra: new Map([
+          [10, map({ 0: "emulator", 2: "retroarch", 3: "1.19.1", 4: "mgba", 5: "0.10.3", 6: "muos", 7: "2502.0" })],
+        ]),
       }),
     ],
   ),
@@ -515,7 +519,7 @@ export const valid = {
 };
 
 export const invalid = {
-  // This schema describes v0.3, so an integer key it does not list fails
+  // This schema describes v0.4, so an integer key it does not list fails
   // validation. A shipped decoder is deliberately looser: it ignores and
   // round-trips these, because the only thing they can be is a later minor
   // version's field. That difference is a decoder rule the schema cannot state.
@@ -600,6 +604,16 @@ export const invalid = {
     map({ 0: "save", 1: "gb", 3: map({ 0: "io.epilogue.operator", 2: "io.epilogue" }) }),
     [part()],
   ),
+
+  // A core's slug derives from the name RetroArch reports, and is not that
+  // name. `mGBA` is the core's `library_name` verbatim, which fails the slug
+  // arm on case and the reverse-DNS arm for having no dot, so it is malformed
+  // rather than a core nobody has listed yet.
+  "core-as-library-name": bundle(map({ 0: "save", 1: "gba", 3: map({ 2: "retroarch", 4: "mGBA" }) }), [part()]),
+
+  // The same for a platform written the way it writes its own name. `muOS` is
+  // a display name, not a slug, and has no dot to be a minted one.
+  "platform-as-display-name": bundle(map({ 0: "save", 1: "gba", 3: map({ 2: "retroarch", 6: "muOS" }) }), [part()]),
 
   // Same for a role. A socket is hardware and belongs to nobody, and a private
   // name for one could not be matched against a target by anything but its

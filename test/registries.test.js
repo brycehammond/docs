@@ -84,6 +84,38 @@ describe("registries", () => {
     }
   });
 
+  it("gives every app a slug that matches the shared grammar", () => {
+    const apps = column(read("apps"), "Slug").flatMap(slugs);
+    assert.ok(apps.length > 0, "no Slug column found in apps.md");
+    for (const slug of apps) assert.match(slug, SLUG, `apps.md: ${slug}`);
+  });
+
+  it("gives every platform a slug that matches the shared grammar", () => {
+    const platforms = column(read("platforms"), "Slug").flatMap(slugs);
+    assert.ok(platforms.length > 0, "no Slug column found in platforms.md");
+    for (const slug of platforms) assert.match(slug, SLUG, `platforms.md: ${slug}`);
+  });
+
+  // A device whose firmware loads cores is the app and has no platform beneath
+  // it, so a name listed in both would give that device two places to go.
+  it("lists no name as both an app and a platform", () => {
+    const apps = new Set(column(read("apps"), "Slug").flatMap(slugs));
+    for (const slug of column(read("platforms"), "Slug").flatMap(slugs))
+      assert.ok(!apps.has(slug), `\`${slug}\` is listed as both an app and a platform`);
+  });
+
+  // An app runs either every core of a kind or a core of its own, so each name
+  // in its Cores column has to be one the cores registry knows as one or the
+  // other.
+  it("names only real core kinds or cores in the apps registry", () => {
+    const cores = read("cores");
+    const known = new Set([...column(cores, "Kind"), ...column(cores, "Slug")].flatMap(slugs));
+    const cited = column(read("apps"), "Cores").flatMap(slugs);
+    assert.ok(cited.length > 0, "no Cores column found in apps.md");
+    for (const name of cited)
+      assert.ok(known.has(name), `apps.md names \`${name}\`, which is neither a core kind nor a core`);
+  });
+
   // A role cell holds either a slug or a numbered-socket prefix. A prefix ends
   // in `-` and is not itself a slug, so the check is that appending a number
   // yields one: that is exactly the claim the registry makes about it.

@@ -17,8 +17,9 @@ to the list. Registration is first-come and non-blocking; to add an entry, open 
 | ------------------------------------ | -------------------------------------------------- |
 | [System Slugs](/registries/systems/) | The canonical slug for every known gaming system.  |
 | [Emulator Cores](/registries/cores/) | Known emulator cores and the systems they run.     |
+| [Apps](/registries/apps/)            | Known apps that run cores, and which ones.         |
+| [Platforms](/registries/platforms/)  | Known operating systems and firmwares apps run on. |
 | [Save Roles](/registries/roles/)     | The socket a save came out of, per system.         |
 | [Vendor Names](/registries/vendors/) | Assigned `x.*` names for producers with no domain. |
 
-More lists land here as the specs need them; producers that are not cores (cartridge readers, services) are next in
-line.
+More lists land here as the specs need them; producers that run no core (cartridge readers, services) are next in line.

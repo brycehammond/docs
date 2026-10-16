@@ -123,33 +123,47 @@ header's. Provenance belongs to each save, not just to the file around it: a bun
 cartridge and another exported by an emulator, each carrying its own part-level `source`. All keys optional; consumers
 use this for display and provenance, never for game matching.
 
-| Key | Name          | Type | Notes                                                                                                                                                                                                                                                                                                                                                    |
-| --- | ------------- | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0   | `device_kind` | text | What kind of producer read the bytes. See vocabulary below.                                                                                                                                                                                                                                                                                              |
-| 1   | `fingerprint` | text | Opaque stable identifier for the specific device or install, so two bundles can be traced to the same producer. SHOULD carry no personal information.                                                                                                                                                                                                    |
-| 2   | `app`         | text | The producing software or device. Either a [slug](/specifications/common-types/slug/) from the [Emulator Cores registry](/registries/cores/) (`"mgba"`), or, for a producer with no entry, a [reverse-DNS name](/specifications/common-types/reverse-dns-name/) it mints for itself (`"io.mgba"`, `"x.epilogue.operator"`). See below for which applies. |
-| 3   | `app_version` | text | Version of `app`, in whatever scheme that app uses.                                                                                                                                                                                                                                                                                                      |
+| Key | Name               | Type | Notes                                                                                                                                                                                                                                                                                                                                              |
+| --- | ------------------ | ---- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0   | `device_kind`      | text | What kind of producer read the bytes. See vocabulary below.                                                                                                                                                                                                                                                                                        |
+| 1   | `fingerprint`      | text | Opaque stable identifier for the specific device or install, so two bundles can be traced to the same producer. SHOULD carry no personal information.                                                                                                                                                                                              |
+| 2   | `app`              | text | The producing software or device. Either a [slug](/specifications/common-types/slug/) from the [Apps registry](/registries/apps/) (`"retroarch"`), or, for a producer with no entry, a [reverse-DNS name](/specifications/common-types/reverse-dns-name/) it mints for itself (`"io.mgba"`, `"x.epilogue.operator"`). See below for which applies. |
+| 3   | `app_version`      | text | Version of `app`, in whatever scheme that app uses.                                                                                                                                                                                                                                                                                                |
+| 4   | `core`             | text | The emulator core `app` ran to produce the bytes, for an app that runs one. Either a slug from the [Emulator Cores registry](/registries/cores/) (`"mgba"`), or, for a core with no entry, a reverse-DNS name.                                                                                                                                     |
+| 5   | `core_version`     | text | Version of `core`, in whatever scheme that core uses. A libretro core reports it as `library_version`.                                                                                                                                                                                                                                             |
+| 6   | `platform`         | text | The operating system or firmware `app` ran on: a handheld firmware such as muOS, or a general-purpose system such as Windows. Either a slug from the [Platforms registry](/registries/platforms/) (`"muos"`), or, for a platform with no entry, a reverse-DNS name.                                                                                |
+| 7   | `platform_version` | text | Version of `platform`, in whatever scheme that platform uses.                                                                                                                                                                                                                                                                                      |
 
-The Cores registry covers emulator cores and nothing else, so a cartridge reader, a flashcart or a service has no slug
-to take and names itself in reverse-DNS instead.
+`platform`, `app` and `core` are three fields because each comes apart from the others. One app runs many cores and one
+core runs in many apps: RetroArch running mGBA is `app: "retroarch"` with `core: "mgba"`, and the same game played on
+its Gambatte core differs only in `core` and `core_version`. One app also ships on many platforms, and a firmware that
+ships an app is the platform rather than the app: RetroArch on a handheld running muOS is `platform: "muos"` with
+`app: "retroarch"`, and the same RetroArch on a desktop differs only in `platform` and `platform_version`. A device
+whose firmware loads cores itself, such as the Analogue Pocket, is the app, with no platform beneath it to name. A
+standalone emulator is an app around an engine of its own, and names both: mGBA run on its own is `app: "io.mgba"` with
+`core: "mgba"`. A producer that runs no core, such as a cartridge reader, a flashcart or a service, leaves `core` out
+and has no slug to take in the Apps registry either, so it names itself in reverse-DNS.
 
-Which arm applies is not a preference. A producer listed in the [Cores registry](/registries/cores/) **MUST** write that
-slug, and one with no entry **MUST** write a reverse-DNS name, so a producer has exactly one spelling: mGBA is `mgba`
-because it is listed, never `io.mgba`, though it holds the domain. Left to taste, two producers would describe one piece
-of software two ways, and `source` sits in the header where that changes the
-[content hash](#content-hash-and-file-hash).
+Which arm applies is not a preference, and the rule is the same for all three fields. A producer listed in the field's
+registry **MUST** write that slug, and one with no entry **MUST** write a reverse-DNS name, so each has exactly one
+spelling: RetroArch is `retroarch` because it is listed, never `com.libretro.retroarch`, and the mGBA core is `mgba`,
+never `io.mgba`, though both hold their domains. Left to taste, two producers would describe one piece of software two
+ways, and `source` sits in the header where that changes the [content hash](#content-hash-and-file-hash).
 
-The slug is also the string a consumer already has, since it derives mechanically from the `saves/<core>/` folder a core
-writes to. That matters most for the one case where a producer names somebody else: a tool reporting saves it found in
-someone's RetroArch install is describing an observation, and a registry slug says that, where minting a reverse-DNS
-name on that core's behalf would claim a name in a namespace the tool does not hold.
+The slug is also the string a consumer already has: a core's derives mechanically from the `saves/<core>/` folder it
+writes to, the app is whichever install that folder sits in, and the platform is whatever that install runs on. That
+matters most for the one case where a producer names somebody else: a tool reporting saves it found on someone's muOS
+handheld is describing an observation, and registry slugs say that, where minting reverse-DNS names on muOS's,
+RetroArch's and the core's behalf would claim names in namespaces the tool does not hold. A tool that observed a
+platform, an app or a core with no entry leaves that field out rather than mint one.
 
 A producer that writes a reverse-DNS name and is later listed switches to the slug. Bundles written before keep the name
 they were written with and round-trip unchanged, the same way an [`x` name](/registries/vendors/) stays assigned after a
 vendor acquires a domain.
 
 `device_kind` values. The list is spec-owned, so a new category comes from a PR against this spec rather than from a
-producer. `app` one row above is the opposite case: it names the producer itself, so it is the producer's to mint.
+producer. `app`, `core` and `platform` above are the opposite case: they name somebody's software, so its owner mints a
+name where the registry has none.
 
 | Value              | Meaning                                                                                                   |
 | ------------------ | --------------------------------------------------------------------------------------------------------- |

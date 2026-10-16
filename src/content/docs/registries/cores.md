@@ -3,22 +3,23 @@ title: Emulator Cores
 description: Known emulator cores, their canonical slugs, and the systems they run.
 ---
 
-An emulator core is the engine that actually runs the game, as distinct from the frontend or device that hosts it. The
-registry covers three kinds:
+An emulator core is the engine that actually runs the game, as distinct from the frontend or device that hosts it, which
+is an [app](/registries/apps/). The registry covers three kinds:
 
-- **`libretro`** — software cores hosted by RetroArch, OnionOS and most handheld firmwares. The canonical name is the
-  core's `library_name`, the exact string RetroArch uses to name a `saves/<core>/` folder.
+- **`libretro`** — software cores hosted by RetroArch, on its own or inside Onion and most handheld firmwares. The
+  canonical name is the core's `library_name`, the exact string RetroArch uses to name a `saves/<core>/` folder.
 - **`mister`** — MiSTer FPGA cores. The canonical name is the core's repository name in the MiSTer-devel organization
   (`NES_MiSTer`), which derives to `nes-mister`; the `MiSTer` suffix namespaces the slug on its own.
 - **`openfpga`** — Analogue Pocket openFPGA cores. The canonical name is the `Author.Platform` folder the core installs
   to on the SD card, so the slug carries its author.
 
-The slug is what a producer writes in the Universal Saves Format's [`source.app`](/specifications/bundle/#source-map)
-field when a save was produced by that core. A core listed here MUST use its slug rather than a reverse-DNS name, even
-if it holds a domain, so that one core has one spelling. A slug is derived mechanically from the kind's canonical name:
-lowercase, with every run of non-alphanumeric characters replaced by a single `-`, and any leading or trailing one
-dropped. The result conforms to the [slug grammar](/specifications/common-types/slug/) every vocabulary here shares.
-Where a core also exists as a standalone emulator (mGBA, DuckStation), the slug covers both; the engine is the same.
+The slug is what a producer writes in the Universal Saves Format's [`source.core`](/specifications/bundle/#source-map)
+field when a save was produced by that core, beside the app that ran it in `source.app`. A core listed here MUST use its
+slug rather than a reverse-DNS name, even if it holds a domain, so that one core has one spelling. A slug is derived
+mechanically from the kind's canonical name: lowercase, with every run of non-alphanumeric characters replaced by a
+single `-`, and any leading or trailing one dropped. The result conforms to the
+[slug grammar](/specifications/common-types/slug/) every vocabulary here shares. Where a core also exists as a
+standalone emulator (mGBA, DuckStation), the slug covers both; the engine is the same.
 
 The **Systems** column uses slugs from the [System Slugs registry](/registries/systems/). The **Also seen as** column
 records other names for the same core: former names (the Mednafen cores were renamed Beetle, Genesis_MiSTer became

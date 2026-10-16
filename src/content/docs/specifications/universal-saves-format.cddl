@@ -1,6 +1,6 @@
 ; ============================================================================
 ; 1SAV - Universal Saves Format, v1
-; Spec version 0.3: not yet stabilized, expect breaking changes.
+; Spec version 0.4: not yet stabilized, expect breaking changes.
 ;
 ; CDDL per RFC 8610. This file is the shape of a bundle and nothing else.
 ; Why the shape is what it is:  /specifications/universal-saves-format/
@@ -19,7 +19,7 @@ bundle = [
 ]
 
 ; Integer keys belong to the spec; text keys belong to producers. This schema
-; describes v0.3 exactly, so an integer key it does not list fails validation,
+; describes v0.4 exactly, so an integer key it does not list fails validation,
 ; and so does a `shape` it does not list. A decoder is looser on purpose: it
 ; parses and round-trips both, since each is a later minor version's. See the
 ; spec.
@@ -110,8 +110,12 @@ hash = #6.18540(bstr .size 32)  ; sha256
 source = {
   ? 0 => device-kind, ; device_kind (emulator | cartridge-reader | flashcart | service)
   ? 1 => tstr,        ; fingerprint
-  ? 2 => app,         ; app         (core slug "mgba", or a minted name "io.mgba")
+  ? 2 => app,         ; app         (app slug "retroarch", or a minted name "io.mgba")
   ? 3 => tstr,        ; app_version
+  ? 4 => core,        ; core        (core slug "mgba", or a minted name)
+  ? 5 => tstr,        ; core_version
+  ? 6 => platform,    ; platform    (platform slug "muos", or a minted name)
+  ? 7 => tstr,        ; platform_version
 }
 
 card = {
@@ -186,7 +190,9 @@ reverse-dns = tstr .regexp "(x|[a-z]{2,63})([.][a-z0-9]([a-z0-9-]{0,61}[a-z0-9])
 ; draws from, which the key tables in the spec spell out.
 system-slug = slug                    ; System Slugs registry
 device-kind = slug                    ; spec-owned; a producer may not mint one
-app = slug / reverse-dns              ; Emulator Cores registry slug, or a minted name
+app = slug / reverse-dns              ; Apps registry slug, or a minted name
+core = slug / reverse-dns             ; Emulator Cores registry slug, or a minted name
+platform = slug / reverse-dns         ; Platforms registry slug, or a minted name
 role = slug                           ; Save Roles registry
 card-format = slug                    ; spec-owned; a producer may not mint one
 
